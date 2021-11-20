@@ -1,0 +1,21 @@
+{
+	"headers": [
+		{
+			"source": "/(.*)",
+			"headers": [
+				{
+					"key": "access-control-allow-origin",
+					"value": "*"
+				},
+				{
+					"key": "cross-origin-opener-policy",
+					"value": "same-origin"
+				},
+				{
+					"key": "cross-origin-embedder-policy",
+					"value": "require-corp"
+				}
+			]
+		}
+	]
+}

@@ -1,9 +1,9 @@
 {
-	"name": "MP3-TO-MP4",
+	"name": "convert324",
 	"version": "1.0.0",
 	"description": "mp3 to mp4",
 	"main": "index.js",
-	"repository": "https://github.com/Kanary159357/MP3-TO-MP4.git",
+	"repository": "https://github.com/Kanary159357/convert324.git",
 	"author": "kanary <kanary159357@gmail.com>",
 	"license": "MIT",
 	"scripts": {

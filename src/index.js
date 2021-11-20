@@ -6,7 +6,6 @@ const ffmpeg = createFFmpeg({
 });
 
 ffmpeg.setLogger(({ type, message }) => {
-	const loadDiv = document.getElementById('loadView');
 	const videoDiv = document.getElementById('videoView');
 
 	if (['run FS.writeFile t_img.jpeg', 'load ffmpeg-core'].includes(message)) {
@@ -27,6 +26,9 @@ const removeButton = document.getElementById('removeText');
 const nav = document.getElementById('controlDiv');
 const navButton = document.getElementById('showControl');
 const convertButton = document.getElementById('convertButton');
+const resButton = document.getElementById('resSelect');
+
+resButton.addEventListener('click', initCanvas);
 
 function getRes() {
 	const resValue = document.getElementById('resSelect').value;

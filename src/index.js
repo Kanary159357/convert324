@@ -1,16 +1,29 @@
-import { createFFmpeg } from '@ffmpeg/ffmpeg';
+import { createFFmpeg, fetchFile } from '@ffmpeg/ffmpeg';
 import './style.css';
 const ffmpeg = createFFmpeg({
 	corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
-	log: false,
+	log: true,
 });
 
 ffmpeg.setLogger(({ type, message }) => {
 	const videoDiv = document.getElementById('videoView');
-
-	if (['run FS.writeFile t_img.jpeg', 'load ffmpeg-core'].includes(message)) {
+	const loadDiv = document.getElementById('loadDiv');
+	const preveiwVideo = document.getElementById('preveiwVideo');
+	console.log(message);
+	if (
+		[
+			'run ffmpeg command: -framerate 1 -loop 1 -i img1.jpg -i srcMp3.mp3 -s 1280x720 -c:a aac -c:v libx264 -shortest -pix_fmt yuv420p output.mp4',
+			'load ffmpeg-core',
+		].includes(message)
+	) {
 		if (videoDiv.classList.contains('hidden')) {
 			videoDiv.classList.toggle('hidden');
+		}
+		if (loadDiv.classList.contains('hidden')) {
+			loadDiv.classList.toggle('hidden');
+		}
+		if (!preveiwVideo.classList.contains('hidden')) {
+			preveiwVideo.classList.toggle('hidden');
 		}
 		setTimeout(() => {
 			window.scrollTo({
@@ -18,6 +31,14 @@ ffmpeg.setLogger(({ type, message }) => {
 				behavior: 'smooth',
 			});
 		}, 250);
+	}
+	if (message == 'FFMPEG_END') {
+		if (!loadDiv.classList.contains('hidden')) {
+			loadDiv.classList.toggle('hidden');
+		}
+		if (preveiwVideo.classList.contains('hidden')) {
+			preveiwVideo.classList.toggle('hidden');
+		}
 	}
 });
 const thumbnailFile = document.getElementById('thumbnailInput');
@@ -93,19 +114,24 @@ async function convertMP4() {
 			if (!ffmpeg.isLoaded()) {
 				await ffmpeg.load();
 			}
-			ffmpeg.FS('writeFile', 't_img.jpeg', b64Image);
+			ffmpeg.FS('writeFile', 'img1.jpg', b64Image);
 			ffmpeg.FS('writeFile', 'srcMp3.mp3', array);
 			await ffmpeg.run(
+				'-framerate',
+				'1',
+				'-loop',
+				'1',
 				'-i',
-				't_img.jpeg',
+				'img1.jpg',
 				'-i',
 				'srcMp3.mp3',
 				'-s',
 				`${x}x${y}`,
 				'-c:a',
-				'copy',
+				'aac',
 				'-c:v',
 				'libx264',
+				'-shortest',
 				'-pix_fmt',
 				'yuv420p',
 				'output.mp4'

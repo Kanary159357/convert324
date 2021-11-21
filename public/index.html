@@ -24,8 +24,9 @@
 				</div>
 				<canvas id="myCanvas" class="shadow-2xl m-auto" width="1280" height="720"></canvas>
 
-				<div id="loadView" class="flex flex-col items-center justify-center h-96 hidden">
-					<div id="loadBar" class="h-72 w-72 flex flex-col text-6xl items-center justify-center">
+				<div id="videoView" class="mt-6 mb-3 flex flex-col h-720px hidden">
+					<h2 class="text-4xl font-hanAir font-bold text-gray-700">Video Preview</h2>
+					<div id="loadDiv" class="flex items-center justify-center h-96">
 						<svg class="animate-spin -ml-1 mr-3 h-32 w-32 text-gray" xmlns="http://www.w3.org/2000/svg"
 							fill="none" viewBox="0 0 24 24">
 							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
@@ -34,23 +35,9 @@
 								d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
 							</path>
 						</svg>
-						<div id="loadMessage" class="pt-6">Loading..</div>
-
 					</div>
-				</div>
 
-				<div id="videoView" class="mt-6 mb-3 flex flex-col h-720px hidden">
-					<h2 class="text-4xl font-hanAir font-bold text-gray-700">Video Preview</h2>
-					<video id="preveiwVideo" class="w-full" controls>
-						=======
-						<div class="mt-6 mb-3 flex flex-col items-center">
-							<h2 class="text-4xl font-hanAir font-bold text-gray-700">Video Preview</h2>
-							<video id="preveiwVideo" class="w-16 h-9" controls>
-								>>>>>>> 09b786b... make videotag small
-							</video>
-						</div>
-
-
+					<video id="preveiwVideo" class="w-full hidden" controls>
 				</div>
 				<div id="controlDiv"
 					class=" w-60 h-700px fixed inset-y-40 right-0 transition-all     duration-200 ease-in">

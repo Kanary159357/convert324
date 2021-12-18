@@ -117,21 +117,23 @@ async function convertMP4() {
 			ffmpeg.FS('writeFile', 'img1.jpg', b64Image);
 			ffmpeg.FS('writeFile', 'srcMp3.mp3', array);
 			await ffmpeg.run(
-				'-framerate',
-				'1',
 				'-loop',
+				'1',
+				'-framerate',
 				'1',
 				'-i',
 				'img1.jpg',
 				'-i',
 				'srcMp3.mp3',
+				'-c:a',
+				'copy',
 				'-s',
 				`${x}x${y}`,
-				'-c:a',
-				'aac',
 				'-c:v',
 				'libx264',
 				'-shortest',
+				'-crf',
+				'0',
 				'-pix_fmt',
 				'yuv420p',
 				'output.mp4'

@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"jsx": "react-jsx",
+		"skipLibCheck": true,
+		"isolatedModules": true,
+		"emitDeclarationOnly": true,
+		"declaration": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"baseUrl": "./src",
+		"strict": true
+	}
+}

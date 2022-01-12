@@ -4,6 +4,7 @@ import Button from './base/Button';
 import LabelSelecter from './base/LabelSelector';
 
 import UploadBox from './base/UploadBox';
+import { InputTextState } from './MainView';
 import TextController from './TextController';
 
 interface ControllerProp {
@@ -14,7 +15,10 @@ interface ControllerProp {
 		state: string,
 		prop: string
 	) => void;
+	inputText: InputTextState;
 	setTextContent: () => void;
+	removeText: () => void;
+	convertMP4: () => void;
 	onCanvasSizeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 	onCanvasFontChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
@@ -23,9 +27,12 @@ const Controller = ({
 	onAudioChange,
 	onImageChange,
 	setTextContent,
+	removeText,
 	onTextChange,
 	onCanvasSizeChange,
 	onCanvasFontChange,
+	convertMP4,
+	inputText,
 }: ControllerProp) => {
 	const FontOptions = [
 		'배민한나Air',
@@ -33,7 +40,7 @@ const Controller = ({
 		'배민을지로',
 		'스포카네오산스',
 	];
-	const ResolutionOption = ['1920 x 1080', '1280 x 720'];
+	const ResolutionOption = ['1280 x 720', '1920 x 1080'];
 	return (
 		<div
 			id='controlDiv'
@@ -60,8 +67,16 @@ const Controller = ({
 						/>
 					</div>
 
-					<TextController text='Title' onChange={onTextChange} />
-					<TextController text='SubTitle' onChange={onTextChange} />
+					<TextController
+						state={inputText.title}
+						text='Title'
+						onChange={onTextChange}
+					/>
+					<TextController
+						state={inputText.subtitle}
+						text='SubTitle'
+						onChange={onTextChange}
+					/>
 
 					<div className='my-6'>
 						<LabelSelecter
@@ -76,10 +91,11 @@ const Controller = ({
 					</div>
 					<div className='flex justify-between'>
 						<Button text='Apply' onClick={setTextContent} />
-						<Button text='Remove' />
+						<Button text='Remove' onClick={removeText} />
 					</div>
 					<button
 						id='convertButton'
+						onClick={convertMP4}
 						className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 my-6 rounded'>
 						Convert
 					</button>

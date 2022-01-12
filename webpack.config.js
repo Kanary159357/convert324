@@ -3,7 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const webpack = require('webpack');
-const isDevMode = process.env.NODE_ENV.includes('dev');
+
 const plugins = [
 	new webpack.EnvironmentPlugin({
 		NODE_ENV: 'development',
@@ -24,7 +24,19 @@ module.exports = {
 		path: path.resolve(__dirname, 'public'),
 	},
 	mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
-	plugins,
+	plugins: [
+		new webpack.EnvironmentPlugin({
+			NODE_ENV: 'development',
+		}),
+		new MiniCssExtractPlugin({
+			linkType: false,
+			filename: '[name].css',
+			chunkFilename: '[id].css',
+		}),
+		new HtmlWebpackPlugin({
+			template: 'public/index.html',
+		}),
+	],
 	devServer: {
 		port: 3000,
 		host: 'localhost',
@@ -33,7 +45,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.css$/i,
+				test: /\.(css)$/i,
 				include: path.resolve(__dirname, './src'),
 				use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
 			},
@@ -48,5 +60,5 @@ module.exports = {
 			},
 		],
 	},
-	resolve: { extensions: ['.tsx', '.ts', '.js', '.json'] },
+	resolve: { extensions: ['.tsx', '.ts', '.js', '.json', 'css'] },
 };

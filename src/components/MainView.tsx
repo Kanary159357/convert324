@@ -10,6 +10,7 @@ export interface TextState {
 	color: string;
 	x: number;
 	y: number;
+	size: number;
 	[key: string]: string | number;
 }
 export interface InputTextState {
@@ -17,6 +18,10 @@ export interface InputTextState {
 
 	subtitle: TextState;
 	title: TextState;
+}
+export interface CanvasSizeState {
+	x: number;
+	y: number;
 }
 
 export type FontType =
@@ -27,7 +32,7 @@ export type FontType =
 const MainView = () => {
 	const textState = {
 		text: '',
-		color: '',
+		color: '#ffffff',
 		x: 0,
 		y: 0,
 		size: 50,
@@ -42,7 +47,12 @@ const MainView = () => {
 	const [canvasFont, setCanvasFont] = useState<FontType>('스포카네오산스');
 	const [imageSrc, setImage] = useState<File>();
 	const [audioSrc, setAudio] = useState<File>();
-	const [canvasSize, setCanvasSize] = useState({ x: 1280, y: 720 });
+	const [isLoading, setLoading] = useState(false);
+	const [showPreview, setShowPreview] = useState(false);
+	const [canvasSize, setCanvasSize] = useState<CanvasSizeState>({
+		x: 1280,
+		y: 720,
+	});
 	const [inputText, setInputText] = useState<InputTextState>(inputInitialState);
 	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -54,11 +64,10 @@ const MainView = () => {
 			});
 		}
 		ffmpeg.setLogger(({ type, message }) => {
-			if (type !== 'info') {
-				setMessage(message);
-			}
+			console.log(message);
 		});
 		ffmpeg.setProgress(({ ratio }) => {
+			console.log(ratio);
 			if (ratio >= 0 && ratio <= 1) {
 				setProgress(ratio * 100);
 			}
@@ -72,6 +81,8 @@ const MainView = () => {
 	async function convertMP4() {
 		const reader = new FileReader();
 		reader.readAsArrayBuffer(audioSrc as Blob);
+		console.log(audioSrc);
+		setShowPreview(false);
 		reader.onloadend = async (e) => {
 			if (e.target && canvasRef.current) {
 				if (e.target.readyState === FileReader.DONE) {
@@ -81,20 +92,27 @@ const MainView = () => {
 					const array = new Uint8Array(arrayBuffer as ArrayBuffer);
 					const { x, y } = canvasSize;
 					if (ffmpeg) {
+						setLoading(true);
 						if (!ffmpeg.isLoaded()) {
 							await ffmpeg.load();
 						}
+						setTimeout(() => {
+							window.scrollTo({
+								top: document.body.scrollHeight,
+								behavior: 'smooth',
+							});
+						}, 250);
 						ffmpeg.FS('writeFile', 'img1.jpg', b64Image);
 						ffmpeg.FS('writeFile', 'srcMp3.mp3', array);
 						await ffmpeg.run(
+							'-i',
+							'srcMp3.mp3',
 							'-loop',
 							'1',
 							'-framerate',
 							'1',
 							'-i',
 							'img1.jpg',
-							'-i',
-							'srcMp3.mp3',
 							'-c:a',
 							'copy',
 							'-s',
@@ -112,7 +130,9 @@ const MainView = () => {
 						const filesrc = URL.createObjectURL(
 							new Blob([data.buffer], { type: 'video/mp4' })
 						);
+						setLoading(false);
 						setVideoSrc(filesrc);
+						setShowPreview(true);
 					}
 				}
 			}
@@ -183,11 +203,12 @@ const MainView = () => {
 		}
 	}
 	function removeText() {
+		initCanvas(canvasSize);
 		if (imageSrc) {
 			setThumbnailContent();
 		}
 	}
-	function initCanvas() {
+	function initCanvas(canvasSize: CanvasSizeState) {
 		if (canvasRef.current) {
 			const canvas = canvasRef.current;
 			const ctx = canvas.getContext('2d');
@@ -205,8 +226,15 @@ const MainView = () => {
 	function onCanvasSizeChange(e: React.ChangeEvent<HTMLSelectElement>) {
 		const resValue = e.target.value;
 		const [x, y] = resValue.replace(/\s/gi, '').split('x');
-		console.log(x, y);
-		setCanvasSize({ x: Number(x), y: Number(y) });
+		const newState = { x: Number(x), y: Number(y) };
+		setCanvasSize(newState);
+		if (canvasRef.current) {
+			const canvas = canvasRef.current;
+			const ctx = canvas.getContext('2d');
+			if (ctx) {
+				initCanvas(newState);
+			}
+		}
 	}
 	function onCanvasFontChange(e: React.ChangeEvent<HTMLSelectElement>) {
 		const fontValue = e.target.value as FontType;
@@ -219,11 +247,16 @@ const MainView = () => {
 		sub: string
 	) {
 		const tVal = e.target.value;
+		const isNum = parseInt(tVal) === Number(tVal);
 		const newState = state.toLowerCase();
-		setInputText((value) => {
+		const subState = sub.toLowerCase();
+		setInputText((prev) => {
 			return {
-				...inputText,
-				[newState]: { ...inputText[newState], [sub]: tVal },
+				...prev,
+				[newState]: {
+					...inputText[newState],
+					[subState]: isNum ? Number(tVal) : tVal,
+				},
 			};
 		});
 	}
@@ -231,6 +264,11 @@ const MainView = () => {
 		console.log(inputText);
 	}, [inputText]);
 	function setTextContent() {
+		const { subtitle, title } = inputText;
+		if (subtitle.size <= 0 || title.size <= 0) {
+			alert('Size should be bigger than 0!');
+			return;
+		}
 		const fontConvert = {
 			배민한나Air: 'bm-hanna-air',
 			배민한나Pro: 'bm-hanna-pro',
@@ -243,20 +281,19 @@ const MainView = () => {
 			const ctx = canvas.getContext('2d');
 			if (ctx) {
 				ctx.textAlign = 'center';
-				const { subtitle, title } = inputText;
 				const { x, y } = canvasSize;
 				ctx.font = `${title.size}px ${font}`;
 				ctx.fillStyle = title.color;
 				ctx.fillText(title.text, x / 2 + title.x, y / 2 + title.y);
-
+				console.log(title, subtitle);
 				ctx.font = `${subtitle.size}px ${font}`;
 				ctx.fillStyle = subtitle.color;
-				ctx.fillText(subtitle.text, x / 2 + subtitle.x, y / 2 + subtitle.y);
+				ctx.fillText(subtitle.text, x / 2 + subtitle.x, y / 1.5 + subtitle.y);
 			}
 		}
 	}
 	useEffect(() => {
-		initCanvas();
+		initCanvas(canvasSize);
 	}, []);
 	return (
 		<>
@@ -266,6 +303,7 @@ const MainView = () => {
 						<div className='mb-3 flex items-end'>
 							<h2 className='text-4xl font-hanAir font-bold text-gray-700'>
 								Thumbnail Preview
+								{progress}
 							</h2>
 						</div>
 						<canvas
@@ -273,35 +311,42 @@ const MainView = () => {
 							className='shadow-2xl m-auto'
 							width='1280'
 							height='720'></canvas>
-						<div
-							id='videoView'
-							className='mt-6 mb-3 flex flex-col h-720px hidden'>
-							<h2 className='text-4xl font-hanAir font-bold text-gray-700'>
-								Video Preview
-							</h2>
-							<div
-								id='loadDiv'
-								className='flex items-center justify-center h-96'>
-								<RefreshIcon className='animate-spin -ml-1 mr-3 h-32 w-32 text-gray' />
-							</div>
 
-							<video
-								id='preveiwVideo'
-								src={videoSrc}
-								className='w-full hidden'
-								controls
-							/>
-						</div>
+						{(isLoading || showPreview) && (
+							<div id='videoView' className='mt-6 mb-3 flex flex-col h-720px'>
+								<h2 className='text-4xl font-hanAir font-bold text-gray-700'>
+									Video Preview
+								</h2>
+								{isLoading && (
+									<div
+										id='loadDiv'
+										className='flex items-center justify-center h-96'>
+										<RefreshIcon className='animate-spin -ml-1 mr-3 h-32 w-32 text-gray' />
+									</div>
+								)}
+								{showPreview && (
+									<video
+										id='preveiwVideo'
+										src={videoSrc}
+										className='w-full'
+										controls
+									/>
+								)}
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
 			<Controller
+				inputText={inputText}
 				onAudioChange={onAudioChange}
 				onImageChange={onImageChange}
 				onCanvasSizeChange={onCanvasSizeChange}
 				onCanvasFontChange={onCanvasFontChange}
 				onTextChange={onTextChange}
 				setTextContent={setTextContent}
+				removeText={removeText}
+				convertMP4={convertMP4}
 			/>
 		</>
 	);

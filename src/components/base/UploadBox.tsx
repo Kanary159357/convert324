@@ -1,10 +1,6 @@
 import { MusicNoteIcon, PhotographIcon } from '@heroicons/react/solid';
 import React from 'react';
 
-interface UploadProps {
-	onClick: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
 const UploadBox = ({
 	onClick,
 	type,

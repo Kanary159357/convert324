@@ -1,5 +1,5 @@
 import { ExclamationIcon, SwitchHorizontalIcon } from '@heroicons/react/solid';
-import React, { useEffect } from 'react';
+import React from 'react';
 import Button from './base/Button';
 import LabelSelecter from './base/LabelSelector';
 

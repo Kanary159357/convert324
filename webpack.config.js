@@ -4,24 +4,36 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const webpack = require('webpack');
 
-const plugins = [
-	new webpack.EnvironmentPlugin({
-		NODE_ENV: 'development',
-	}),
-	new MiniCssExtractPlugin({
-		linkType: false,
-		filename: '[name].css',
-		chunkFilename: '[id].css',
-	}),
-	new HtmlWebpackPlugin({
-		template: 'public/index.html',
-	}),
-];
 module.exports = {
 	entry: './src/index.tsx',
+
 	output: {
 		filename: 'main.js',
 		path: path.resolve(__dirname, 'public'),
+	},
+	devServer: {
+		headers: [
+			{
+				key: 'Cross-Origin-Opener-Policy',
+				value: 'same-origin',
+			},
+			{
+				key: 'Cross-Origin-Embedder-Policy',
+				value: 'require-corp',
+			},
+			{
+				key: 'Access-Control-Allow-Origin',
+				value: 'researchgate.net',
+			},
+			{
+				key: 'Access-Control-Allow-Methods',
+				value: 'GET,PUT,POST,DELETE',
+			},
+			{
+				key: 'Access-Control-Allow-Headers',
+				value: 'Content-Type',
+			},
+		],
 	},
 	mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 	plugins: [
@@ -37,11 +49,7 @@ module.exports = {
 			template: 'public/index.html',
 		}),
 	],
-	devServer: {
-		port: 3000,
-		host: 'localhost',
-		open: true,
-	},
+
 	module: {
 		rules: [
 			{

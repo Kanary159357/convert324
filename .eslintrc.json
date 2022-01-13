@@ -1,7 +1,7 @@
 {
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
-		"project": "./tsconfig.json"
+		"project": "./tsconfig.build.json"
 	},
 	"env": {
 		"browser": true,
@@ -10,7 +10,9 @@
 	"extends": [
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
-		"plugin:@typescript-eslint/eslint-recommended"
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:react/recommended",
+		"plugin:react/jsx-runtime"
 	],
 	"ignorePatterns": [
 		"webpack.config.js",

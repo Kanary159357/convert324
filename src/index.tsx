@@ -9,3 +9,6 @@ ReactDom.render(
 	</React.StrictMode>,
 	document.getElementById('root')
 );
+if (module && module.hot && module.hot.accept) {
+	module.hot.accept();
+}

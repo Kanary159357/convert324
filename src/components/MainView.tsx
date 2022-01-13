@@ -1,4 +1,4 @@
-import { RefreshIcon } from '@heroicons/react/solid';
+import { AtSymbolIcon, RefreshIcon } from '@heroicons/react/solid';
 import Controller from './Controller';
 import React, { useEffect, useRef, useState } from 'react';
 import { createFFmpeg, FFmpeg } from '@ffmpeg/ffmpeg';
@@ -29,6 +29,7 @@ export type FontType =
 	| '배민한나Air'
 	| '배민한나Pro'
 	| '배민을지로';
+
 const MainView = () => {
 	const textState = {
 		text: '',
@@ -43,7 +44,6 @@ const MainView = () => {
 	};
 	const [videoSrc, setVideoSrc] = useState('');
 	const [progress, setProgress] = useState(0);
-	const [message, setMessage] = useState('');
 	const [canvasFont, setCanvasFont] = useState<FontType>('스포카네오산스');
 	const [imageSrc, setImage] = useState<File>();
 	const [audioSrc, setAudio] = useState<File>();
@@ -63,13 +63,13 @@ const MainView = () => {
 				corePath: 'https://unpkg.com/@ffmpeg/core@0.10.0/dist/ffmpeg-core.js',
 			});
 		}
-		ffmpeg.setLogger(({ type, message }) => {
+		ffmpeg.setLogger(({ message }) => {
 			console.log(message);
 		});
 		ffmpeg.setProgress(({ ratio }) => {
-			console.log(ratio);
 			if (ratio >= 0 && ratio <= 1) {
-				setProgress(ratio * 100);
+				console.log(Number((ratio * 100).toFixed(2)));
+				setProgress(Number((ratio * 100).toFixed(2)));
 			}
 			if (ratio === 1) {
 				setTimeout(() => {
@@ -81,7 +81,6 @@ const MainView = () => {
 	async function convertMP4() {
 		const reader = new FileReader();
 		reader.readAsArrayBuffer(audioSrc as Blob);
-		console.log(audioSrc);
 		setShowPreview(false);
 		reader.onloadend = async (e) => {
 			if (e.target && canvasRef.current) {
@@ -260,9 +259,7 @@ const MainView = () => {
 			};
 		});
 	}
-	useEffect(() => {
-		console.log(inputText);
-	}, [inputText]);
+
 	function setTextContent() {
 		const { subtitle, title } = inputText;
 		if (subtitle.size <= 0 || title.size <= 0) {
@@ -302,8 +299,7 @@ const MainView = () => {
 					<div id='mainDiv' className='flex flex-col justify-center m-auto '>
 						<div className='mb-3 flex items-end'>
 							<h2 className='text-4xl font-hanAir font-bold text-gray-700'>
-								Thumbnail Preview
-								{progress}
+								Thumbnail Preview!!!
 							</h2>
 						</div>
 						<canvas
@@ -320,8 +316,9 @@ const MainView = () => {
 								{isLoading && (
 									<div
 										id='loadDiv'
-										className='flex items-center justify-center h-96'>
-										<RefreshIcon className='animate-spin -ml-1 mr-3 h-32 w-32 text-gray' />
+										className='flex flex-col items-center justify-center h-96'>
+										<AtSymbolIcon className='animate-spin -ml-1 mr-3 h-32 w-32 text-gray' />
+										<div className='text-8xl py-6'>{progress}</div>
 									</div>
 								)}
 								{showPreview && (

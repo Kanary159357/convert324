@@ -30,6 +30,12 @@
 	}
 }
 @layer base {
+	html,
+	body {
+		padding: 0;
+		margin: 0;
+	}
+
 	@font-face {
 		font-family: 'bm-hanna-pro';
 		font-weight: 500;

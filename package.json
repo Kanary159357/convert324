@@ -8,22 +8,45 @@
 	"license": "MIT",
 	"scripts": {
 		"build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
-		"dev": "cross-env NODE_ENV=development webpack --config webpack.config.js"
+		"dev": "cross-env NODE_ENV=development webpack serve  --stats-error-details --config webpack.config.js ",
+		"express": "node server.js",
+		"lint": "eslint ./src/**/*.{ts,tsx}"
 	},
 	"dependencies": {
 		"@ffmpeg/core": "^0.10.0",
 		"@ffmpeg/ffmpeg": "^0.10.1",
-		"autoprefixer": "^10.4.0",
-		"css-loader": "^6.5.1",
-		"postcss": "^8.3.11",
-		"postcss-loader": "^6.2.0",
-		"style-loader": "^3.3.1",
-		"tailwindcss": "^2.2.19"
+		"@heroicons/react": "^1.0.5",
+		"react": "^17.0.2",
+		"react-dom": "^17.0.2"
 	},
 	"devDependencies": {
+		"@babel/core": "^7.16.7",
+		"@babel/preset-env": "^7.16.8",
+		"@babel/preset-react": "^7.16.7",
+		"@babel/preset-typescript": "^7.16.7",
+		"@types/react": "^17.0.38",
+		"@types/react-dom": "^17.0.11",
+		"@types/webpack-env": "^1.16.3",
+		"@typescript-eslint/eslint-plugin": "^5.9.1",
+		"@typescript-eslint/parser": "^5.9.1",
+		"autoprefixer": "^10.4.2",
+		"babel-loader": "^8.2.3",
 		"cross-env": "^7.0.3",
+		"css-loader": "^6.5.1",
+		"eslint": "^8.6.0",
+		"eslint-plugin-react": "^7.28.0",
+		"express": "^4.17.2",
+		"html-webpack-plugin": "^5.5.0",
 		"mini-css-extract-plugin": "^2.4.5",
+		"postcss": "^8.4.5",
+		"postcss-loader": "^6.2.1",
+		"style-loader": "^3.3.1",
+		"tailwindcss": "^3.0.13",
+		"typescript": "^4.5.4",
 		"webpack": "^5.64.0",
-		"webpack-cli": "^4.9.1"
+		"webpack-cli": "^4.9.1",
+		"webpack-dev-middleware": "^5.3.0",
+		"webpack-dev-server": "^4.7.2",
+		"webpack-hot-middleware": "^2.25.1"
 	}
 }

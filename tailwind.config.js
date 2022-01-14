@@ -1,8 +1,9 @@
 module.exports = {
+	/*
 	purge: {
 		content: ['./public/*.html', './src/*.js'],
 		safelist: ['font-serif', 'font-euljiro', 'font-sans', 'font-hanPro'],
-	},
+	},*/
 	darkMode: false,
 	theme: {
 		fontFamily: {
@@ -13,6 +14,7 @@ module.exports = {
 		},
 		extend: {},
 	},
+	content: ['./src/**/*.{js,ts,tsx,tsx}'],
 	variants: {
 		extend: {
 			keyframes: {

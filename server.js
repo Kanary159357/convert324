@@ -1,6 +1,11 @@
 const express = require('express');
 const app = express();
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
 
+const webpackConfig = require('./webpack.config.js');
+const compiler = webpack(webpackConfig);
 app.use((_, res, next) => {
 	res.header('Cross-Origin-Opener-Policy', 'same-origin');
 	res.header('Cross-Origin-Embedder-Policy', 'require-corp');
@@ -9,10 +14,14 @@ app.use((_, res, next) => {
 	res.header('Access-Control-Allow-Headers', 'Content-Type');
 	next();
 });
+app.use(
+	webpackDevMiddleware(compiler, {
+		publicPath: webpackConfig.output.publicPath,
+	})
+);
+app.use(webpackHotMiddleware(compiler));
 
-app.use(express.static('../public'));
-
-const PORT = 8080;
+const PORT = 8085;
 
 app.listen(PORT, () => {
 	console.log('server listening to ' + PORT);
